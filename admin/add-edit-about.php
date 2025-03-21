@@ -9,8 +9,13 @@ if (empty($_SESSION['EMAIL'])) {
 
 //jika button simpan di klik
 if (isset($_POST['simpan'])) {
-  $nama = $_POST['nama'];
+  $desc = $_POST['desc_diri'];
   $job = $_POST['job'];
+  $alamat_web = $_POST['alamat_web'];
+  $phone = $_POST['phone'];
+  $city = $_POST['city'];
+  $dagree = $_POST['dagree'];
+  $email = $_POST['email'];
   $foto = $_FILES['foto'];
 
 
@@ -19,9 +24,9 @@ if (isset($_POST['simpan'])) {
     $filePath = "../assets/uploads/" . $fileName;
     move_uploaded_file($foto['tmp_name'], $filePath);
     
-    $insert = mysqli_query($koneksi, "INSERT INTO home(nama, foto, job) VALUES ('$nama', '$fileName', '$job')");
+    $insert = mysqli_query($koneksi, "INSERT INTO about(desc_diri, foto, job, alamat_web, phone, city, dagree, email) VALUES ('$desc', '$fileName', '$job', '$alamat_web', '$phone', '$city', '$dagree', '$email')");
     if ($insert) {
-      header("Location: home.php");
+      header("Location: about.php");
     }
 
   }
@@ -30,14 +35,19 @@ if (isset($_POST['simpan'])) {
 if (isset($_GET['Edit'])) {
   $id = $_GET['Edit'];
 
-  $qEdit = mysqli_query($koneksi, "SELECT * FROM home WHERE id = $id");
+  $qEdit = mysqli_query($koneksi, "SELECT * FROM about WHERE id = $id");
   $rowUpdate = mysqli_fetch_assoc($qEdit); 
 }
 
 if (isset($_POST['edit'])) {
   $id = $_GET['Edit'];
-  $nama = $_POST['nama'];
+  $desc = $_POST['desc_diri'];
   $job = $_POST['job'];
+  $alamat_web = $_POST['alamat_web'];
+  $phone = $_POST['phone'];
+  $city = $_POST['city'];
+  $dagree = $_POST['dagree'];
+  $email = $_POST['email'];
   $foto = $_FILES['foto'];
 
   $fillQupdate = '';
@@ -45,7 +55,7 @@ if (isset($_POST['edit'])) {
     $fileName = uniqid() . "_" . basename($foto['name']);
     $filePath = "../assets/uploads/" . $fileName;
     if (move_uploaded_file($foto['tmp_name'], $filePath)){
-      $cekFoto = mysqli_query($koneksi, "SELECT foto FROM home WHERE id =$id");
+      $cekFoto = mysqli_query($koneksi, "SELECT foto FROM about WHERE id =$id");
       $fotoLama = mysqli_fetch_assoc($cekFoto);
       if ($fotoLama && file_exists("../assets/uploads/" . $fotoLama['foto'])) {
         unlink("../assets/uploads/" . $fotoLama['foto']);
@@ -56,9 +66,9 @@ if (isset($_POST['edit'])) {
     }
   }
 
-  $qUpdate = mysqli_query($koneksi, "UPDATE home SET $fillQupdate nama='$nama', job='$job' WHERE id = $id");
+  $qUpdate = mysqli_query($koneksi, "UPDATE about SET $fillQupdate desc_diri='$desc', job='$job', alamat_web='$alamat_web', phone='$phone', city='$city', dagree='$dagree', email='$email'  WHERE id = $id");
   if ($qUpdate){
-    header("Location: home.php");
+    header("Location: about.php");
   }
 }
 
@@ -138,10 +148,10 @@ if (isset($_POST['edit'])) {
               <form action="" method="post" enctype="multipart/form-data">
                 <div class="row mb-3">
                   <div class="col-sm-2">
-                    <label for="">Nama</label>
+                    <label for="">Deskripsi Saya</label>
                   </div>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="nama" placeholder="Masukkan Nama" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['nama'] : '' ?>">
+                    <input type="text" class="form-control" name="desc_diri" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['desc_diri'] : '' ?>">
                   </div>
                 </div>
 
@@ -167,6 +177,51 @@ if (isset($_POST['edit'])) {
                   </div>
                   <div class="col-sm-10">
                     <input type="text" class="form-control" name="job" placeholder="Masukkan Nama Job Desc" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['job'] : '' ?>">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-sm-2">
+                    <label for="">Alamat Website</label>
+                  </div>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="alamat_web" placeholder="Masukkan Alamat Web" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['alamat_web'] : '' ?>">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-sm-2">
+                    <label for="">No Hp</label>
+                  </div>
+                  <div class="col-sm-10">
+                    <input type="number" class="form-control" name="phone" placeholder="Masukkan No Handphone" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['phone'] : '' ?>">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-sm-2">
+                    <label for="">Alamat</label>
+                  </div>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="city" placeholder="Masukkan Alamat Anda" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['city'] : '' ?>">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-sm-2">
+                    <label for="">Universitas</label>
+                  </div>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="dagree" placeholder="Masukkan Nama Universitas" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['dagree'] : '' ?>">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-sm-2">
+                    <label for="">Email</label>
+                  </div>
+                  <div class="col-sm-10">
+                    <input type="email" class="form-control" name="email" placeholder="Masukkan Email" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['email'] : '' ?>">
                   </div>
                 </div>
 

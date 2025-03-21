@@ -7,19 +7,19 @@ if (empty($_SESSION['EMAIL'])) {
   header("Location: ../login.php");
 }
 
-$home = mysqli_query($koneksi, "SELECT * FROM home");
-$rows = mysqli_fetch_all($home, MYSQLI_ASSOC);
+$about = mysqli_query($koneksi, "SELECT * FROM about");
+$rows = mysqli_fetch_all($about, MYSQLI_ASSOC);
 
 if (isset($_GET['idDel'])) {
   $id = $_GET['idDel'];
 
-  $cekFOTO = mysqli_query($koneksi, "SELECT foto FROM home WHERE id = $id");
+  $cekFOTO = mysqli_query($koneksi, "SELECT foto FROM about WHERE id = $id");
   $rowcekFoto = mysqli_fetch_assoc($cekFOTO);
   if ($rowcekFoto && file_exists("../assets/uploads/" . $fotoLama['foto'])) {
     unlink("../assets/uploads/" . $rowcekFoto['foto']);
-    $delete = mysqli_query($koneksi, "DELETE FROM home WHERE id = $id");
+    $delete = mysqli_query($koneksi, "DELETE FROM about WHERE id = $id");
     if ($delete) {
-      header("Location: home.php");
+      header("Location: about.php");
     }
   }
 
@@ -44,10 +44,10 @@ if (isset($_GET['idDel'])) {
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Home</h1>
+      <h1>About</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
+          <li class="breadcrumb-item"><a href="dashboard.php">About</a></li>
           <li class="breadcrumb-item">Pages</li>
           <li class="breadcrumb-item active">Blank</li>
         </ol>
@@ -60,15 +60,20 @@ if (isset($_GET['idDel'])) {
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Home</h5>
+              <h5 class="card-title">About</h5>
               <div class="table table-responsive">
-                <a class="btn btn-primary mb-2" href="add-edit-home.php">CREATE</a>
+                <a class="btn btn-primary mb-2" href="add-edit-about.php">CREATE</a>
                 <table class="table table-bordered">
                   <tr>
                     <th>No</th>
-                    <th>Nama</th>
+                    <th>Deskripsi Saya</th>
                     <th>Foto</th>
                     <th>Job Desc</th>
+                    <th>Alamat Website</th>
+                    <th>No Hp</th>
+                    <th>Alamat</th>
+                    <th>Universitas</th>
+                    <th>Email</th>
                     <th>Actions</th>
                   </tr>
                   <?php
@@ -77,11 +82,16 @@ if (isset($_GET['idDel'])) {
                   ?>
                     <tr>
                       <td><?= $no++ ?></td>
-                      <td><?= $row['nama'] ?></td>
+                      <td><?= $row['desc_diri'] ?></td>
                       <td><img width="150" src="../assets/uploads/<?= $row['foto'] ?>" alt=""></td>
                       <td><?= $row['job'] ?></td>
-                      <td><a href="add-edit-home.php?Edit=<?php echo $row['id'] ?>" class="btn btn-success btn-sm">Edit</a>
-                      <a onclick="return confirm ('Yakin ingin menghapus?')" href="home.php?idDel=<?php echo $row['id'] ?>" class="btn btn-danger btn-sm">Delete</a>
+                      <td><?= $row['alamat_web'] ?></td>
+                      <td><?= $row['phone']?></td>
+                      <td><?= $row['city'] ?></td>
+                      <td><?= $row['dagree']?></td>
+                      <td><?= $row['email'] ?></td>
+                      <td><a href="add-edit-about.php?Edit=<?php echo $row['id'] ?>" class="btn btn-success btn-sm">Edit</a>
+                      <a onclick="return confirm ('Yakin ingin menghapus?')" href="about.php?idDel=<?php echo $row['id'] ?>" class="btn btn-danger btn-sm">Delete</a>
                       </td>
                     </tr>
                   <?php

@@ -7,58 +7,37 @@ if (empty($_SESSION['EMAIL'])) {
   header("Location: ../login.php");
 }
 
-//jika button simpan di klik
 if (isset($_POST['simpan'])) {
-  $nama = $_POST['nama'];
-  $job = $_POST['job'];
-  $foto = $_FILES['foto'];
+  $desc_service = $_POST['desc_service'];
+  $judul_service = $_POST['judul_service'];
+  $deskripsi = $_POST['deskripsi'];
+  
 
+  $insert = mysqli_query($koneksi, "INSERT INTO services (desc_service, judul_service, deskripsi) VALUES ('$desc_service', '$judul_service', '$deskripsi')");
 
-  if ($foto['error'] == 0) {
-    $fileName = uniqid() . "_" . basename($foto['name']);
-    $filePath = "../assets/uploads/" . $fileName;
-    move_uploaded_file($foto['tmp_name'], $filePath);
-    
-    $insert = mysqli_query($koneksi, "INSERT INTO home(nama, foto, job) VALUES ('$nama', '$fileName', '$job')");
-    if ($insert) {
-      header("Location: home.php");
-    }
-
+  if ($insert) {
+    header("Location: service.php");
+  } else {
+    header("Location: add-edit-service.php");
   }
 }
 
 if (isset($_GET['Edit'])) {
   $id = $_GET['Edit'];
 
-  $qEdit = mysqli_query($koneksi, "SELECT * FROM home WHERE id = $id");
+  $qEdit = mysqli_query($koneksi, "SELECT * FROM services WHERE id = $id");
   $rowUpdate = mysqli_fetch_assoc($qEdit); 
 }
 
 if (isset($_POST['edit'])) {
   $id = $_GET['Edit'];
-  $nama = $_POST['nama'];
-  $job = $_POST['job'];
-  $foto = $_FILES['foto'];
+  $desc_service = $_POST['desc_service'];
+  $judul_service = $_POST['judul_service'];
+  $deskripsi = $_POST['deskripsi'];
 
-  $fillQupdate = '';
-  if ($foto['error'] == 0) {
-    $fileName = uniqid() . "_" . basename($foto['name']);
-    $filePath = "../assets/uploads/" . $fileName;
-    if (move_uploaded_file($foto['tmp_name'], $filePath)){
-      $cekFoto = mysqli_query($koneksi, "SELECT foto FROM home WHERE id =$id");
-      $fotoLama = mysqli_fetch_assoc($cekFoto);
-      if ($fotoLama && file_exists("../assets/uploads/" . $fotoLama['foto'])) {
-        unlink("../assets/uploads/" . $fotoLama['foto']);
-      }
-      $fillQupdate = "foto='$fileName',";
-    }else {
-      echo "EDIT GAGAL";
-    }
-  }
-
-  $qUpdate = mysqli_query($koneksi, "UPDATE home SET $fillQupdate nama='$nama', job='$job' WHERE id = $id");
+  $qUpdate = mysqli_query($koneksi, "UPDATE services SET desc_service='$desc_service', judul_service='$judul_service', deskripsi='$deskripsi' WHERE id = $id");
   if ($qUpdate){
-    header("Location: home.php");
+    header("Location: service.php");
   }
 }
 
@@ -118,7 +97,7 @@ if (isset($_POST['edit'])) {
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Admin Page</h1>
+      <h1>Admin</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
@@ -134,53 +113,45 @@ if (isset($_POST['edit'])) {
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Add Edit Home</h5>
+              <h5 class="card-title">Add Edit Service</h5>
               <form action="" method="post" enctype="multipart/form-data">
                 <div class="row mb-3">
                   <div class="col-sm-2">
-                    <label for="">Nama</label>
+                    <label for="">Desc Service</label>
                   </div>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" name="nama" placeholder="Masukkan Nama" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['nama'] : '' ?>">
+                    <input type="text" class="form-control" name="desc_service" value="<?php echo isset($_GET['Edit']) ? $rowUpdate['desc_service'] : '' ?>" required>
                   </div>
+                </div>
+                
+                <div class="row mb-3">
+                  <div class="col-sm-2">
+                    <label for="">Judul Service</label>
+                  </div>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" name="judul_service" value="<?php echo isset($_GET['Edit']) ? $rowUpdate['judul_service'] : '' ?>" required>
+                  </div>               
                 </div>
 
                 <div class="row mb-3">
                   <div class="col-sm-2">
-                    <label for="">Foto</label>
+                    <label for="">Deskripsi</label>
                   </div>
                   <div class="col-sm-10">
-                  <input type="file" class="form-control" name="foto">
-                  </div>
-                  <?php if (isset($_GET['Edit'])) {
-                  ?>
-                    <div class="mt-2">
-                      <img width="190" src="../assets/uploads/<?= $rowUpdate['foto'] ?>" alt="">
-                    </div>
-                  <?php
-                  }?>
-                </div>
-
-                <div class="row mb-3">
-                  <div class="col-sm-2">
-                    <label for="">Job Desc</label>
-                  </div>
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" name="job" placeholder="Masukkan Nama Job Desc" required value="<?php echo isset($_GET['Edit']) ? $rowUpdate['job'] : '' ?>">
-                  </div>
+                    <input type="text" class="form-control" name="deskripsi" value="<?php echo isset($_GET['Edit']) ? $rowUpdate['deskripsi'] : '' ?>" required>
+                  </div>               
                 </div>
 
                 <div class="row mb-3">
                   <div class="col-md-2 offset-md-2">
-                    <?php 
+                  <?php 
                     if(isset($_GET['Edit'])){
                     ?>
                     <button name="edit" class="btn btn-primary" type="submit" >Edit</button>
                     <?php 
                     } else {
-                    ?>
+                    ?>                 
                       <button name="simpan" class="btn btn-primary" type="submit" >Simpan</button>
-
                       <?php 
                     }?>
                   </div>
